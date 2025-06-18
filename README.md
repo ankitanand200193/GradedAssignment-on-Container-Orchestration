@@ -20,3 +20,31 @@ Put them together:
 ```app.use("/prefix", ...) + router.post("/path") = POST /prefix/path```
 
 
+## Issue in upload controller file:
+### ✅ **Crisp Summary of Issue & Fix**
+
+---
+
+### 🔴 **Issue**
+
+* Used undefined variable `que`.
+* Incorrectly used `newQuestion.save({...})` without creating `newQuestion`.
+* Mixed `.then()` with `async/await`.
+* Missing validation for `question_title`.
+
+---
+
+### ✅ **Fix**
+
+* Removed `if (que)` block.
+* Replaced with:
+  `const newQuestion = new Questions({ ...req.body });`
+  `await newQuestion.save();`
+* Used clean `async/await`.
+* Added `question_title` to validation.
+
+---
+
+Let me know if you want a one-liner version or visual diagram!
+
+
