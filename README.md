@@ -1,10 +1,16 @@
 # Graded Assignment on Container Orchestration
 
+## Pre-requisites
+1. You have to post data using below POST register path
+2. Keep the backend running
+3. 
+
 ## Issues in backend
 
 1. .env file was named as config.env
 2. index.js .env file path is modified ```require("dotenv").config({ path: ".env" });```
-3. PORT is missing in the .env file.
+3. **PORT** is missing in the .env file.
+4. comment out the HASH_KEY and JWT_SECRET_KEY in the .env file.
 
 ## Get & POST API Endpoints
 
@@ -63,7 +69,5 @@ Put them together:
 * Added `question_title` to validation.
 
 ---
-
-Let me know if you want a one-liner version or visual diagram!
 
 
