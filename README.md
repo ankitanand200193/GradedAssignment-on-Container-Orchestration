@@ -3,7 +3,7 @@
 ## Pre-requisites
 1. You have to post data using below POST register path
 2. Keep the backend running
-3. 
+3. Remove the comment out of the faculty in the faculty models schema
 
 ## Issues in backend
 
@@ -70,6 +70,21 @@ Put them together:
 
 ### Schema data
 
+#### admin
+
+```
+{
+  "username": "jane.doe_admin",
+  "email": "jane.doe@organization.com",
+  "password": "Pa$$w0rdJD!2025"
+}
+
+{
+  "username": "sys_admin_alpha",
+  "email": "sysadmin.alpha@company.net",
+  "password": "SecureAccessKey#789"
+}
+```
 #### Student
 ```
 [
