@@ -1,5 +1,25 @@
 # Graded Assignment on Container Orchestration
 
+
+project-root/
+├── docker-compose.yml
+├── learnerReportCS_frontend/
+│   ├── Dockerfile
+│   └── .env (for React)
+├── learnerReportCS_backend/
+│   ├── Dockerfile
+│   └── .env (for Node)
+
+
+
+1. dockerfile
+2. docker-compose
+3. deployment file
+4. service files
+5. helm chart
+6. Jenkins on ec2
+7. goorvy code
+
 ## Pre-requisites
 1. You have to post data using below POST register path
 2. Keep the backend running
