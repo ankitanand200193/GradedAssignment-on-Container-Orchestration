@@ -10,6 +10,10 @@ project-root/
 │   ├── Dockerfile
 │   └── .env (for Node)
 
+## Frequent commands:
+
+docker-compose up --build
+kubectl get all --all-namespacescs
 
 
 1. dockerfile
@@ -20,10 +24,32 @@ project-root/
 6. Jenkins on ec2
 7. goorvy code
 
+### docker-composefile
+In newer versions of Docker Compose (v2+), the version: field (e.g., version: '3.8') is deprecated and not required anymore.
+
+The Compose spec now auto-detects features without needing the version tag.
+
+
+### kubenetes namespace hack:
+Even if you declared namespace: learner-app inside the YAML, it's safer to explicitly set it while applying.
+
+Run this:
+
+kubectl apply -f mongo.yaml -n learner-app
+kubectl apply -f backend.yaml -n learner-app
+kubectl apply -f frontend.yaml -n learner-app
+
+
+
+
+
 ## Pre-requisites
 1. You have to post data using below POST register path
 2. Keep the backend running
 3. Remove the comment out of the faculty in the faculty models schema
+
+
+
 
 ## Issues in backend
 
