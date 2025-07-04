@@ -1,4 +1,10 @@
 # backend-deployment.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: learner-app
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,8 +25,14 @@ spec:
           ports:
             - containerPort: 3000
           env:
-            - name: MONGO_URL
+            - name: ATLAS_URI
               value: "mongodb://mongo:27017/learnerdb"
+            - name: HASH_KEY
+              value: "thisIsMyHashKey"
+            - name: JWT_SECRET_KEY
+              value: "thisIsMyJwtSecretKey"
+
+             
 ---
 # backend-service.yaml
 apiVersion: v1

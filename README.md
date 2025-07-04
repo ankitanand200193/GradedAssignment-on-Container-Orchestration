@@ -43,6 +43,7 @@ kubectl apply -f frontend.yaml -n learner-app
 
 
 
+
 ## Pre-requisites
 1. You have to post data using below POST register path
 2. Keep the backend running
