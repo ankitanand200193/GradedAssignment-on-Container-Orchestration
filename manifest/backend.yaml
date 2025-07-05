@@ -23,10 +23,10 @@ spec:
         - name: backend
           image: ankit200193/learnerreport_backend
           ports:
-            - containerPort: 3000
+            - containerPort: 5000
           env:
             - name: ATLAS_URI
-              value: "mongodb://mongo:27017/learnerdb"
+              value: "mongodb://mongo:27017/learnerCS"
             - name: HASH_KEY
               value: "thisIsMyHashKey"
             - name: JWT_SECRET_KEY
@@ -38,11 +38,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: backend-service
 spec:
   selector:
     app: backend
+  type: NodePort
+  
   ports:
-    - port: 3000
-      targetPort: 3000
-  type: ClusterIP
+    - port: 3001
+      targetPort: 5000
+      nodePort: 30001

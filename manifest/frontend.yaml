@@ -25,6 +25,9 @@ spec:
           image: ankit200193/learnerreport_frontend
           ports:
             - containerPort: 3000
+          env:
+          - name: REACT_APP_API_BASE_URL
+            value: backend-service
 ---
 # frontend-service.yaml
 apiVersion: v1

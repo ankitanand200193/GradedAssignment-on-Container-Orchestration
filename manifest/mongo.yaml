@@ -1,10 +1,5 @@
 # mongo-deployment.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: learner-app
 
----
 apiVersion: v1
 kind: Namespace
 metadata:
