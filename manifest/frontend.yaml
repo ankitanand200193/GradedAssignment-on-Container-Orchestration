@@ -27,7 +27,8 @@ spec:
             - containerPort: 3000
           env:
           - name: REACT_APP_API_BASE_URL
-            value: backend-service
+            value: http://192.168.49.2:30001
+
 ---
 # frontend-service.yaml
 apiVersion: v1
@@ -37,7 +38,8 @@ metadata:
 spec:
   selector:
     app: frontend
-  ports:
-    - port: 80
-      targetPort: 3000
   type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30002
