@@ -1,6 +1,14 @@
 # Graded Assignment on Container Orchestration
 
+## Nohting to play in the code.
 
+change only the frontend .env data from in the manifest file. 
+env:
+          - name: REACT_APP_API_BASE_URL
+            value: http://127.0.0.1:52572 # this has to be updated with backend ```IP + nodeport```
+
+
+--------
 project-root/
 ├── docker-compose.yml
 ├── learnerReportCS_frontend/
@@ -14,6 +22,8 @@ project-root/
 
 docker-compose up --build
 kubectl get all --all-namespacescs
+minikube service frontend -n learner-app 
+kubectl config set-context --current --namespace=learner-app
 
 
 1. dockerfile
@@ -39,11 +49,75 @@ kubectl apply -f mongo.yaml -n learner-app
 kubectl apply -f backend.yaml -n learner-app
 kubectl apply -f frontend.yaml -n learner-app
 
+### changes into frontend code to call backend in kubernetes enviroment:
 
+And in the .env file used for building the frontend Docker image:
 
+REACT_APP_BACKEND_URL=http://backend-service:3001
 
+Then rebuild your frontend Docker image and apply the new image to your frontend Deployment in Kubernetes.
 
+backend-service : name of backend service.
 
+### how to exec in mongo
+
+kubectl exec -it mongo-5c748dfffc-qtvt6 -n learner-app  -- mongosh
+
+show dbs
+use learnerdb
+show collections
+db.admins.find().pretty()
+
+#### Disable windows firewall:
+3. Disable Firewall Temporarily (for testing only)
+
+⚠️ Not recommended long-term.
+
+netsh advfirewall set allprofiles state off
+
+Then test Minikube. If it works now, firewall was the issue.
+
+Re-enable it after testing:
+
+netsh advfirewall set allprofiles state on
+
+---------
+
+### Minikube TLS Handshake Timeout - Quick Fix Guide**
+
+**Q: I got a `TLS handshake timeout` error with Minikube. What caused it and how do I fix it?**
+A: The error `Unable to connect to the server: net/http: TLS handshake timeout` usually indicates a slow or unstable internet connection or an unresponsive Minikube cluster. To fix it:
+
+1. **Check Minikube status:**
+
+```bash
+minikube status
+```
+
+2. **Force stop Minikube depending on your driver:**
+
+* **Docker:**
+
+```bash
+docker stop minikube
+docker rm minikube
+```
+
+3. **Clean up everything (optional but recommended):**
+
+```bash
+minikube delete --all --purge
+```
+
+4. **Start fresh Minikube instance:**
+
+```bash
+minikube start
+```
+
+This sequence resets your Minikube setup and resolves the TLS handshake issue.
+
+------
 ## Pre-requisites
 1. You have to post data using below POST register path
 2. Keep the backend running
@@ -132,159 +206,21 @@ Put them together:
   "password": "SecureAccessKey#789"
 }
 ```
-#### Student
-```
-[
-  {"batchName": "Batch-A", "userId": 301, "username": "stud_ravi", "email": "ravi@student.com", "fullname": "Ravi Kumar", "phoneNo": "9000011111", "password": "stud123", "courseName": "MERN", "yearOfExp": 1, "qualification": "B.Tech"},
-  {"batchName": "Batch-A", "userId": 302, "username": "stud_pooja", "email": "pooja@student.com", "fullname": "Pooja Sharma", "phoneNo": "9000011112", "password": "stud123", "courseName": "Python", "yearOfExp": 0, "qualification": "B.Sc"},
-  {"batchName": "Batch-B", "userId": 303, "username": "stud_aman", "email": "aman@student.com", "fullname": "Aman Verma", "phoneNo": "9000011113", "password": "stud123", "courseName": "DevOps", "yearOfExp": 2, "qualification": "MCA"},
-  {"batchName": "Batch-B", "userId": 304, "username": "stud_seema", "email": "seema@student.com", "fullname": "Seema Roy", "phoneNo": "9000011114", "password": "stud123", "courseName": "Cloud", "yearOfExp": 1, "qualification": "M.Tech"},
-  {"batchName": "Batch-C", "userId": 305, "username": "stud_manish", "email": "manish@student.com", "fullname": "Manish Das", "phoneNo": "9000011115", "password": "stud123", "courseName": "Data Science", "yearOfExp": 0, "qualification": "BCA"},
-  {"batchName": "Batch-C", "userId": 306, "username": "stud_divya", "email": "divya@student.com", "fullname": "Divya Singh", "phoneNo": "9000011116", "password": "stud123", "courseName": "Python", "yearOfExp": 1, "qualification": "B.Sc"},
-  {"batchName": "Batch-D", "userId": 307, "username": "stud_nikhil", "email": "nikhil@student.com", "fullname": "Nikhil Patil", "phoneNo": "9000011117", "password": "stud123", "courseName": "AI/ML", "yearOfExp": 2, "qualification": "M.Tech"},
-  {"batchName": "Batch-D", "userId": 308, "username": "stud_shweta", "email": "shweta@student.com", "fullname": "Shweta Jha", "phoneNo": "9000011118", "password": "stud123", "courseName": "Java", "yearOfExp": 1, "qualification": "B.Com"},
-  {"batchName": "Batch-E", "userId": 309, "username": "stud_rohan", "email": "rohan@student.com", "fullname": "Rohan Joshi", "phoneNo": "9000011119", "password": "stud123", "courseName": "Fullstack", "yearOfExp": 0, "qualification": "B.A"},
-  {"batchName": "Batch-E", "userId": 310, "username": "stud_priya", "email": "priya@student.com", "fullname": "Priya Mehta", "phoneNo": "9000011120", "password": "stud123", "courseName": "AWS", "yearOfExp": 1, "qualification": "MBA"}
-]
-```
 
-#### faculty 
-```
-[
-  {"userId": 201, "username": "fac_amit", "email": "amit@fac.com", "fullname": "Amit Kumar", "phoneNo": "9090909090", "password": "fac123", "department": "CS", "skills": "Java", "about": "Senior Lecturer"},
-  {"userId": 202, "username": "fac_kiran", "email": "kiran@fac.com", "fullname": "Kiran Desai", "phoneNo": "8080808080", "password": "fac123", "department": "IT", "skills": "Python", "about": "Trainer"},
-  {"userId": 203, "username": "fac_rekha", "email": "rekha@fac.com", "fullname": "Rekha Sharma", "phoneNo": "7070707070", "password": "fac123", "department": "Maths", "skills": "Statistics", "about": "Guest Faculty"},
-  {"userId": 204, "username": "fac_manoj", "email": "manoj@fac.com", "fullname": "Manoj Tiwari", "phoneNo": "6060606060", "password": "fac123", "department": "Physics", "skills": "Mechanics", "about": "Assistant Professor"},
-  {"userId": 205, "username": "fac_ritu", "email": "ritu@fac.com", "fullname": "Ritu Verma", "phoneNo": "5050505050", "password": "fac123", "department": "CS", "skills": "Node.js", "about": "Mentor"},
-  {"userId": 206, "username": "fac_nitin", "email": "nitin@fac.com", "fullname": "Nitin Goel", "phoneNo": "4040404040", "password": "fac123", "department": "CS", "skills": "DevOps", "about": "Lead Instructor"},
-  {"userId": 207, "username": "fac_vandana", "email": "vandana@fac.com", "fullname": "Vandana S", "phoneNo": "3030303030", "password": "fac123", "department": "HR", "skills": "Soft Skills", "about": "Counselor"},
-  {"userId": 208, "username": "fac_samir", "email": "samir@fac.com", "fullname": "Samir Bhatt", "phoneNo": "2020202020", "password": "fac123", "department": "Placement", "skills": "Career Coach", "about": "Support"},
-  {"userId": 209, "username": "fac_kajal", "email": "kajal@fac.com", "fullname": "Kajal Ahuja", "phoneNo": "1010101010", "password": "fac123", "department": "Admin", "skills": "Operations", "about": "Admin Head"},
-  {"userId": 210, "username": "fac_pranav", "email": "pranav@fac.com", "fullname": "Pranav S", "phoneNo": "1122334455", "password": "fac123", "department": "Tech", "skills": "React", "about": "Intern"}
-]
+🧩 Why is your frontend container listening on 3000 when your Dockerfile & Kubernetes manifest say 5000?
 
-```
+This typically happens when:
+✅ The React development server (or your frontend framework) defaults to port 3000, and you didn’t override it properly.
 
 
-#### careerServiceLogin 
+## EC2
+Jenkins: local
+docker, kubernertes, helm: ec2
 
-```
-[
-  {"email": "kumar@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "jyoti@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "rahul@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "diya@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "raj@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "nidhi@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "sonu@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "varun@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "shilpa@cs.com", "password": "cs123", "userType": "careerService"},
-  {"email": "anu@cs.com", "password": "cs123", "userType": "careerService"}
-]
-```
-#### careerServiceRegister
+### install kubectl:
 
-``` 
-[
-  {"userId": 101, "username": "cs_kumar", "email": "kumar@cs.com", "fullname": "Kumar S", "phoneNo": "9898989898", "password": "cs123", "department": "IT"},
-  {"userId": 102, "username": "cs_jyoti", "email": "jyoti@cs.com", "fullname": "Jyoti M", "phoneNo": "8888888888", "password": "cs123", "department": "Placement"},
-  {"userId": 103, "username": "cs_rahul", "email": "rahul@cs.com", "fullname": "Rahul G", "phoneNo": "7777777777", "password": "cs123", "department": "HR"},
-  {"userId": 104, "username": "cs_diya", "email": "diya@cs.com", "fullname": "Diya M", "phoneNo": "6666666666", "password": "cs123", "department": "Tech"},
-  {"userId": 105, "username": "cs_raj", "email": "raj@cs.com", "fullname": "Raj P", "phoneNo": "9999999999", "password": "cs123", "department": "IT"},
-  {"userId": 106, "username": "cs_nidhi", "email": "nidhi@cs.com", "fullname": "Nidhi J", "phoneNo": "9988776655", "password": "cs123", "department": "Support"},
-  {"userId": 107, "username": "cs_sonu", "email": "sonu@cs.com", "fullname": "Sonu B", "phoneNo": "8877665544", "password": "cs123", "department": "Support"},
-  {"userId": 108, "username": "cs_varun", "email": "varun@cs.com", "fullname": "Varun D", "phoneNo": "9988771234", "password": "cs123", "department": "HR"},
-  {"userId": 109, "username": "cs_shilpa", "email": "shilpa@cs.com", "fullname": "Shilpa T", "phoneNo": "8877443322", "password": "cs123", "department": "Admin"},
-  {"userId": 110, "username": "cs_anu", "email": "anu@cs.com", "fullname": "Anu R", "phoneNo": "9988770000", "password": "cs123", "department": "Tech"}
-]
+   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
-```
+   sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-#### batchRegistration 
-
-```
-[
-  {"BatchName": "Batch-A", "StartDate": "2025-04-01", "TotalEnroll": 25, "StatusActive": 1, "Dropout": 2},
-  {"BatchName": "Batch-B", "StartDate": "2025-04-05", "TotalEnroll": 20, "StatusActive": 1, "Dropout": 1},
-  {"BatchName": "Batch-C", "StartDate": "2025-04-10", "TotalEnroll": 30, "StatusActive": 1, "Dropout": 0},
-  {"BatchName": "Batch-D", "StartDate": "2025-04-15", "TotalEnroll": 18, "StatusActive": 1, "Dropout": 3},
-  {"BatchName": "Batch-E", "StartDate": "2025-04-20", "TotalEnroll": 22, "StatusActive": 1, "Dropout": 1},
-  {"BatchName": "Batch-F", "StartDate": "2025-04-25", "TotalEnroll": 28, "StatusActive": 0, "Dropout": 4},
-  {"BatchName": "Batch-G", "StartDate": "2025-05-01", "TotalEnroll": 35, "StatusActive": 1, "Dropout": 0},
-  {"BatchName": "Batch-H", "StartDate": "2025-05-05", "TotalEnroll": 24, "StatusActive": 0, "Dropout": 2},
-  {"BatchName": "Batch-I", "StartDate": "2025-05-10", "TotalEnroll": 19, "StatusActive": 1, "Dropout": 1},
-  {"BatchName": "Batch-J", "StartDate": "2025-05-15", "TotalEnroll": 27, "StatusActive": 1, "Dropout": 0}
-]
-
-```
-
-#### Attendance
-
-```
-[
-  {
-    "BatchName": "Batch-A",
-    "StudentName": "Ravi Kumar",
-    "Date": { "presentDate": ["2025-06-01", "2025-06-03"], "absentDate": ["2025-06-02"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-A",
-    "StudentName": "Pooja Sharma",
-    "Date": { "presentDate": ["2025-06-01"], "absentDate": ["2025-06-02", "2025-06-03"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-B",
-    "StudentName": "Aman Verma",
-    "Date": { "presentDate": ["2025-06-01", "2025-06-02", "2025-06-03"], "absentDate": [] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-B",
-    "StudentName": "Seema Roy",
-    "Date": { "presentDate": [], "absentDate": ["2025-06-01", "2025-06-02", "2025-06-03"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-C",
-    "StudentName": "Manish Das",
-    "Date": { "presentDate": ["2025-06-02"], "absentDate": ["2025-06-01", "2025-06-03"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-C",
-    "StudentName": "Divya Singh",
-    "Date": { "presentDate": ["2025-06-03"], "absentDate": ["2025-06-01", "2025-06-02"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-D",
-    "StudentName": "Nikhil Patil",
-    "Date": { "presentDate": ["2025-06-01", "2025-06-03"], "absentDate": ["2025-06-02"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-D",
-    "StudentName": "Shweta Jha",
-    "Date": { "presentDate": ["2025-06-01", "2025-06-02"], "absentDate": ["2025-06-03"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-E",
-    "StudentName": "Rohan Joshi",
-    "Date": { "presentDate": ["2025-06-01"], "absentDate": ["2025-06-02", "2025-06-03"] },
-    "TotalClass": 3
-  },
-  {
-    "BatchName": "Batch-E",
-    "StudentName": "Priya Mehta",
-    "Date": { "presentDate": ["2025-06-02", "2025-06-03"], "absentDate": ["2025-06-01"] },
-    "TotalClass": 3
-  }
-]
-
-```
----
-
-
+   kubectl version --client

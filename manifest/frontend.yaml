@@ -22,12 +22,12 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ankit200193/learnerreport_frontend
+          image: ankit200193/learnerreport_frontend:01
           ports:
             - containerPort: 3000
           env:
           - name: REACT_APP_API_BASE_URL
-            value: http://192.168.49.2:30001
+            value: http://127.0.0.1:52572
 
 ---
 # frontend-service.yaml

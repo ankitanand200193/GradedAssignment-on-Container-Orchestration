@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ankit200193/learnerreport_backend
+          image: ankit200193/learnerreport_backend:01
           ports:
             - containerPort: 5000
           env:
@@ -31,7 +31,8 @@ spec:
               value: "thisIsMyHashKey"
             - name: JWT_SECRET_KEY
               value: "thisIsMyJwtSecretKey"
-
+            - name: PORT
+              value: "5000"
              
 ---
 # backend-service.yaml
