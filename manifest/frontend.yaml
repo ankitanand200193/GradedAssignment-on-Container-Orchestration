@@ -1,5 +1,4 @@
 # frontend-deployment.yaml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +21,7 @@ spec:
             - containerPort: 3000
           env:
           - name: REACT_APP_API_BASE_URL
-            value: http://127.0.0.1:52572 # it has to be worker node public IP + backed serice nodeport
+            value: http://13.233.18.200:30027 # it has to be worker node public IP + backed serice nodeport
 
 ---
 # frontend-service.yaml
