@@ -71,11 +71,54 @@ kubectl config set-context --current --namespace=learner-app
 
 ----------------
 
-creating helm 
+### creating helm 
 
 mkdir helm-charts && cd helm-charts
+helm create mern-chart # it will create the whole files system and you have to just write into the files.
 
-ls
+mern-chart/
+├── Chart.yaml
+├── values.yaml
+└── templates/
+    ├── frontend-deployment.yaml
+    ├── frontend-service.yaml
+    ├── backend-deployment.yaml
+    └── backend-service.yaml
+
+### deployment using helm
+
+1. keep the service account : false by 
+```
+serviceAccount:
+  create: false
+```
+2. since we are not using ingress, remove the notes.txt
+
+rm mern-chart/templates/NOTES.txt
+
+```helm install ankit-test-helm (helm deployment name) ./mern-chart```
+
+```helm upgrade ankit-test-helm ./mern-chart```
+
+```helm list`` 
+
+```helm uninstall ankit-test-helm ```
+
+Note: helm chart also has its namespace.
+
+
+### Jenkins of 3rd ec2:
+
+- jenkins
+```
+
+```
+- docker
+- kubectl
+- helm
+
+copy the kube config file of kubernetes to jenkins directory ```/var/lib/jenkins/.kube/config``
+
 
 
 1. dockerfile
