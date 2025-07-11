@@ -1,5 +1,5 @@
 # Graded Assignment on Container Orchestration
-
+--------
 ## Nohting to play in the code.
 
 change only the frontend .env data from in the manifest file. 
@@ -9,7 +9,51 @@ env:
 
 
 --------
+## Install kubernetes
+Install kubernetes on ec2 worker and master post switching to root user using ```sudo su -``
 project-root/
+
+https://github.com/ankitanand200193/Ec2_Kubeadm-Installation-Guide
+
+
+Problem:
+When you install Kubernetes on an EC2 instance as the root user, the configuration file required to connect to the cluster is created only for the root user. This is why you can see the nodes as root, but the connection fails for your "ubuntu" user.
+
+The connection failure for a non-root user like "ubuntu" is typically due to two main reasons:
+
+    Missing Kubeconfig File: The kubectl command-line tool needs a configuration file, known as kubeconfig, to locate and authenticate with the Kubernetes cluster. When you initialize the cluster as root, this file is placed in the root user's home directory (/root/.kube/config). The "ubuntu" user does not have this file in its home directory (/home/ubuntu/.kube/config) by default.[1][2][3][4]
+
+    Incorrect Permissions: Even if the kubeconfig file were accessible to the "ubuntu" user, it might not have the necessary permissions to read it if the file is owned by the root user.[5]
+
+To resolve this, you need to provide the "ubuntu" user with the correct kubeconfig file and appropriate permissions
+
+
+```mkdir -p /home/ubuntu/.kube```
+```sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config```
+```sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config```
+
+--------
+TO get the public IP of ec2 : ```curl ifconfig.me ```
+
+-----
+
+### Understanding the mongourl:
+
+mongodb://mongo:27017/learnerCS
+            │     │      └─ Database name
+            │     └─ Port MongoDB listens on (default 27017)
+            └─ Hostname (should match the **MongoDB service** name in K8s)
+
+---------
+## how to increase the disk storage of ec2 if taint found : disk-pressure
+Increassing ec2 disk storage on console:
+
+Run the following command while done with SSH
+df -h
+sudo growpart /dev/xvda 1
+sudo resize2fs /dev/xvda1
+
+-------------
 ├── docker-compose.yml
 ├── learnerReportCS_frontend/
 │   ├── Dockerfile
@@ -135,19 +179,19 @@ This sequence resets your Minikube setup and resolves the TLS handshake issue.
 
 ## Get & POST API Endpoints
 
-| **GET Path**                                 | **POST Path**                                |
-|---------------------------------------------|----------------------------------------------|
-| http://localhost:3000/student/getstudent     | http://localhost:3000/student/register       |
-|                                              | http://localhost:3000/student/login          |
-|                                             | http://localhost:3000/admin/register         |
-|                                             | http://localhost:3000/admin/login            |
-| http://localhost:3000/careerService/getcareer| http://localhost:3000/careerService/register |
-|                                              | http://localhost:3000/careerService/login    |
-| http://localhost:3000/faculty/getfaculty     | http://localhost:3000/faculty/register       |
-|                                              | http://localhost:3000/faculty/login          |
-| http://localhost:3000/questions              | http://localhost:3000/uploadQuestion         |
-|                                              | http://localhost:3000/batch/register         |
-|                                              | http://localhost:3000/attendance/register    |
+| **GET Path**                                                       | **POST Path**                                                     |
+|--------------------------------------------------------------------|-------------------------------------------------------------------|
+| http://localhost:3000/student/getstudent                           | http://workernode_publicIP:backendNodeport/student/register       |
+|                                                                    | http://workernode_publicIP:backendNodeport/student/login          |
+|                                                                    | http://workernode_publicIP:backendNodeport/admin/register         |
+|                                                                    | http://workernode_publicIP:backendNodeport/admin/login            |
+| http://workernode_publicIP:FrontendNodeport/CareerService/getcareer| http://workernode_publicIP:backendNodeport/careerService/register |
+|                                                                    | http://workernode_publicIP:backendNodeport/careerService/login    |
+| http://workernode_publicIP:FrontendNodeport/faculty/getfaculty     | http://workernode_publicIP:backendNodeport/faculty/register       |
+|                                                                    | http://workernode_publicIP:backendNodeport/faculty/login          |
+| http://workernode_publicIP:FrontendNodeport/questions              | http://workernode_publicIP:backendNodeport/uploadQuestion         |
+|                                                                    | http://workernode_publicIP:backendNodeport/batch/register         |
+|                                                                    | http://workernode_publicIP:backendNodeport/attendance/register    |
 
 
 
@@ -200,11 +244,6 @@ Put them together:
   "password": "Pa$$w0rdJD!2025"
 }
 
-{
-  "username": "sys_admin_alpha",
-  "email": "sysadmin.alpha@company.net",
-  "password": "SecureAccessKey#789"
-}
 ```
 
 🧩 Why is your frontend container listening on 3000 when your Dockerfile & Kubernetes manifest say 5000?
