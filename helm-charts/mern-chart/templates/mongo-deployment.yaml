@@ -4,7 +4,7 @@ metadata:
   name: mongo
   namespace: {{ .Values.namespace }}
 spec:
-   replicas: {{ .Values.frontend.replicaCount }}
+   replicas: {{ .Values.mongo.replicaCount }}
   selector:
     matchLabels:
       app: mongo
