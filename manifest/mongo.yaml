@@ -1,16 +1,10 @@
 # mongo-deployment.yaml
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: learner-app
-
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo
+  namespace: learner-app
 spec:
   replicas: 1
   selector:
@@ -38,7 +32,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: mongo-service
+  namespace: learner-app
 spec:
   selector:
     app: mongo
