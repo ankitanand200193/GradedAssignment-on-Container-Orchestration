@@ -20,8 +20,8 @@ pipeline {
     stage('Build Docker Images') {
       steps {
         script {
-          docker.build("${IMAGE_FRONTEND}:latest", './frontend')
-          docker.build("${IMAGE_BACKEND}:latest", './backend')
+          docker.build("${IMAGE_FRONTEND}:latest", './learnerReportCS_frontend')
+          docker.build("${IMAGE_BACKEND}:latest", './learnerReportCS_backend')
         }
       }
     }
