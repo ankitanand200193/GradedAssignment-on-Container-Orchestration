@@ -1,8 +1,9 @@
 
 serviceAccount:
   create: false
-  
 
+namespace: learner-app
+  
 frontend:
   replicaCount: 2
   image: ankit200193/learnerreport_frontend:01
