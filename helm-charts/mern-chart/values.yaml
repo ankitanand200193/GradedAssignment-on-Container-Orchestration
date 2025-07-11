@@ -1,7 +1,7 @@
-# my-values.yaml
+
 serviceAccount:
   create: false
-
+  
 namespace: learner-app
 
 frontend:
