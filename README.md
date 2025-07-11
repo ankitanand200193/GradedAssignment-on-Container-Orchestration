@@ -83,10 +83,14 @@ sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
 
 **Problem** : What is the significance of the mongo url elements?
 
-**Solution** : mongodb://mongo:27017/learnerCS
-                      │     │        └─ Database name
-                      │     └─ Port MongoDB listens on (default 27017)
-                      └─ Hostname (should match the **MongoDB service** name in K8s)
+**Solution** : 
+```
+mongodb://mongo:27017/learnerCS
+            │     │        └─ Database name
+            │     └─ Port MongoDB listens on (default 27017)
+            └─ Hostname (should match the **MongoDB service** name in K8s)
+
+```
 
 ### 3. Increase the disk storage of ec2 if node taint found : disk-pressure
 
