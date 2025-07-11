@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: {{ .Values.backend.image }}
+          ports:
+            - containerPort: {{ .Values.backend.containerPort }}
+          env:
+            - name: ATLAS_URI
+              value: {{ .Values.backend.env.ATLAS_URI | quote }}
+            - name: HASH_KEY
+              value: {{ .Values.backend.env.HASH_KEY | quote }}
+            - name: JWT_SECRET_KEY
+              value: {{ .Values.backend.env.JWT_SECRET_KEY | quote }}
+            - name: PORT
+              value: {{ .Values.backend.env.PORT | quote }}
