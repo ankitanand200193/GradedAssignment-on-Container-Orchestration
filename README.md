@@ -115,6 +115,16 @@ sudo resize2fs /dev/xvda1
 
 **Solution**: This typically happens when: The React development server (or your frontend framework) defaults to port 3000, and you didn’t override it properly.
 
+### Port selection logic:
+
+| Component                     | Network Type        | Why                                                                                                                   |
+| ----------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 🟩 **Backend (Express/Node)** | `NodePort`          | So that **external clients** (like your local machine, Postman, frontend running outside cluster) can hit the backend |
+| 🟦 **Frontend (React)**       | `NodePort`          | So the browser can access it via public IP                                                                            |
+| 🟧 **MongoDB**                | `ClusterIP`         | Only backend needs access — no external exposure                                                                      |
+| 🔁 **Frontend → Backend**     | `NodePort`          | A client-side app is an application that runs entirely in the user's browser (the client) — not on a server. Frontend will call backend from browser not from the cluster.                                                                                                                           |
+
+
 ## Frequent commands:
 ```
 kubectl get all --all-namespaces
@@ -222,6 +232,7 @@ sudo systemctl start jenkins
 
 
 ### How Jenkins perform tasks on kubernetes cluster
+```
 [Jenkins EC2 (with kubectl)] 
         |
         |---> Connects to Kubernetes master (EC2 #1) via kubeconfig
@@ -230,6 +241,7 @@ sudo systemctl start jenkins
                                 |
                                 |---> Pods get scheduled on Worker Node (EC2 #2)
 
+```
 ------
 
 ### How to exec in mongo container running in pod?
@@ -257,7 +269,8 @@ Re-enable it after testing:
 ```netsh advfirewall set allprofiles state on```
 
 ------
-## Issues in backend source
+
+## Issues in backend source code
 
 1. .env file was named as config.env
 2. index.js .env file path is modified ```require("dotenv").config({ path: ".env" });```
@@ -300,6 +313,33 @@ Postman Url: http://workernode_publicIP:backendNodeport/admin/register
 ## Results :
 
 ## Helm creating the app:
+
+![Alt]()
+
+
+## Frontend UI:
+
+![Alt]()
+
+## Backend UI:
+
+![Alt]()
+
+## IP | Ec2 dashboard
+
+![Alt]()
+
+## Jenkins pipeline build
+
+![Alt]()
+
+## Postman --> Backend | data ingestion
+
+![Alt]()
+
+## Frontend communicates to backend
+
+![Alt]()
 
 
 
