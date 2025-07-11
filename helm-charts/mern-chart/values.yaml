@@ -2,7 +2,6 @@
 serviceAccount:
   create: false
   
-namespace: learner-app
 
 frontend:
   replicaCount: 2
