@@ -12,8 +12,10 @@ pipeline {
   }
 
   stages {
+
     stage('Checkout Code') {
       steps {
+        echo '🔄 Checking out source code...'
         git branch: 'main', url: 'https://github.com/ankitanand200193/GradedAssignment-on-Container-Orchestration.git'
       }
     }
@@ -43,32 +45,31 @@ pipeline {
       }
     }
 
-stage('Helm Deploy to Kubernetes') {
-  steps {
-    script {
-      echo '🚀 Deploying to Kubernetes using Helm...'
+    stage('Helm Deploy to Kubernetes') {
+      steps {
+        script {
+          echo '🚀 Deploying to Kubernetes using Helm...'
+          sh """
+            echo "🔧 Checking/Creating namespace '${KUBE_NAMESPACE}'..."
+            kubectl get namespace ${KUBE_NAMESPACE} || kubectl create namespace ${KUBE_NAMESPACE}
 
-      sh """
-        echo "🔧 Checking/Creating namespace '${KUBE_NAMESPACE}'..."
-        kubectl get namespace ${KUBE_NAMESPACE} || kubectl create namespace ${KUBE_NAMESPACE}
-
-        echo "📦 Deploying Helm release '${HELM_RELEASE}'..."
-        helm upgrade --install ${HELM_RELEASE} ${HELM_CHART_DIR} \
-          --namespace ${KUBE_NAMESPACE} \
-          --set frontend.image=${IMAGE_FRONTEND}:latest \
-          --set backend.image=${IMAGE_BACKEND}:latest
-      """
+            echo "📦 Deploying Helm release '${HELM_RELEASE}'..."
+            helm upgrade --install ${HELM_RELEASE} ${HELM_CHART_DIR} \
+              --namespace ${KUBE_NAMESPACE} \
+              --set frontend.image=${IMAGE_FRONTEND}:latest \
+              --set backend.image=${IMAGE_BACKEND}:latest
+          """
+        }
+      }
     }
   }
-}
-
 
   post {
     success {
       echo '✅ Deployment successful!'
     }
     failure {
-      echo '❌ Deployment failed. Check logs for more information.'
+      echo '❌ Deployment failed. Check logs for details.'
     }
   }
 }
