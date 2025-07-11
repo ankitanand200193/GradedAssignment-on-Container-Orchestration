@@ -181,7 +181,7 @@ This sequence resets your Minikube setup and resolves the TLS handshake issue.
 
 | **GET Path**                                                       | **POST Path**                                                     |
 |--------------------------------------------------------------------|-------------------------------------------------------------------|
-| http://localhost:3000/student/getstudent                           | http://workernode_publicIP:backendNodeport/student/register       |
+| http://workernode_publicIP:FrontendNodeport/student/getstudent     | http://workernode_publicIP:backendNodeport/student/register       |
 |                                                                    | http://workernode_publicIP:backendNodeport/student/login          |
 |                                                                    | http://workernode_publicIP:backendNodeport/admin/register         |
 |                                                                    | http://workernode_publicIP:backendNodeport/admin/login            |
