@@ -69,6 +69,14 @@ kubectl get all --all-namespacescs
 minikube service frontend -n learner-app 
 kubectl config set-context --current --namespace=learner-app
 
+----------------
+
+creating helm 
+
+mkdir helm-charts && cd helm-charts
+
+ls
+
 
 1. dockerfile
 2. docker-compose
@@ -83,7 +91,7 @@ In newer versions of Docker Compose (v2+), the version: field (e.g., version: '3
 
 The Compose spec now auto-detects features without needing the version tag.
 
-
+--------------
 ### kubenetes namespace hack:
 Even if you declared namespace: learner-app inside the YAML, it's safer to explicitly set it while applying.
 
@@ -92,16 +100,7 @@ Run this:
 kubectl apply -f mongo.yaml -n learner-app
 kubectl apply -f backend.yaml -n learner-app
 kubectl apply -f frontend.yaml -n learner-app
-
-### changes into frontend code to call backend in kubernetes enviroment:
-
-And in the .env file used for building the frontend Docker image:
-
-REACT_APP_BACKEND_URL=http://backend-service:3001
-
-Then rebuild your frontend Docker image and apply the new image to your frontend Deployment in Kubernetes.
-
-backend-service : name of backend service.
+--------
 
 ### how to exec in mongo
 
@@ -111,6 +110,7 @@ show dbs
 use learnerdb
 show collections
 db.admins.find().pretty()
+----------------
 
 #### Disable windows firewall:
 3. Disable Firewall Temporarily (for testing only)
@@ -192,8 +192,6 @@ This sequence resets your Minikube setup and resolves the TLS handshake issue.
 | http://workernode_publicIP:FrontendNodeport/questions              | http://workernode_publicIP:backendNodeport/uploadQuestion         |
 |                                                                    | http://workernode_publicIP:backendNodeport/batch/register         |
 |                                                                    | http://workernode_publicIP:backendNodeport/attendance/register    |
-
-
 
 
 ## To know the endpoint of your database:

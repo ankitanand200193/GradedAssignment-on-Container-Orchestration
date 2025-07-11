@@ -1,0 +1,22 @@
+namespace: learner-app
+
+frontend:
+  image: ankit200193/learnerreport_frontend:01
+  containerPort: 3000
+  nodePort: 30002
+  env:
+    REACT_APP_API_BASE_URL: "http://13.233.18.200:30027"
+
+backend:
+  image: ankit200193/learnerreport_backend:01
+  containerPort: 5000
+  nodePort: 30027
+  env:
+    ATLAS_URI: "mongodb://mongo:27017/learnerCS"
+    HASH_KEY: "thisIsMyHashKey"
+    JWT_SECRET_KEY: "thisIsMyJwtSecretKey"
+    PORT: "5000"
+
+mongo:
+  image: mongo:6.0
+  containerPort: 27017
