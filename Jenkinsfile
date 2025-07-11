@@ -7,7 +7,7 @@ pipeline {
     IMAGE_BACKEND  = "${DOCKER_HUB_USER}/learnerreport_backend"
     DOCKER_CREDENTIALS = 'dockerhub-credentials'
     HELM_RELEASE = 'learnerapp'
-    HELM_CHART_DIR = 'helm/mern-chart'
+    HELM_CHART_DIR = 'helm-charts/mern-chart'
   }
 
   stages {
