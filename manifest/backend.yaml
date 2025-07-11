@@ -1,14 +1,10 @@
 # backend-deployment.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: learner-app
 
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
+  namespace: learner-app
 spec:
   replicas: 1
   selector:
@@ -40,6 +36,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
+  namespace: learner-app
 spec:
   selector:
     app: backend
