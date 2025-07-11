@@ -1,81 +1,7 @@
 # Graded Assignment on Container Orchestration
---------
-## Nothing to play in the code.
-
-Change only the frontend .env data helm. 
-env:
-          - name: REACT_APP_API_BASE_URL
-            value: http://127.0.0.1:52572 # this has to be updated with backend ```IP + nodeport```
-
-
---------
-## Install kubernetes
-
-#### Pre-requisites :
-1. One ec2 for master node and another for ec2
-2. Storage 16 GB
-3. Inbound rule include : 30027, 30001, 5000 & 3000
-
-#### Install kubernetes:
-
-Install kubernetes on ec2 worker and master post switching to root user using ```sudo su -``
-project-root/
-
-https://github.com/ankitanand200193/Ec2_Kubeadm-Installation-Guide
-
-## Troubleshooting
-
-#### Cluster inaccessible | ubuntu
-
-**Problem**: Kubernetes cluster created as root user hence it is not allow ubuntu user to access it 
-**Solution** :When Kubernetes is installed as the root user on an EC2 instance, the kubeconfig file is created under /root/.kube/config, making it inaccessible to the "ubuntu" user. As a result, kubectl fails due to missing configuration or insufficient permissions. Copying the file and adjusting permissions resolves the issue.
-
-```mkdir -p /home/ubuntu/.kube```
-```sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config```
-```sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config```
-
-#### Understanding the mongourl:
-
-**Problem** : What is the significance of the mongo url elements?
-**Solution** : mongodb://mongo:27017/learnerCS
-                      │     │        └─ Database name
-                      │     └─ Port MongoDB listens on (default 27017)
-                      └─ Hostname (should match the **MongoDB service** name in K8s)
-
-#### Increase the disk storage of ec2 if node taint found : disk-pressure
-
-**Problem**: Nodes are showing disk-pressure hence cannot create pods on the cluster. How to increase the size of the nodes?
-**Solution** :Increassing ec2 disk storage on console, then SSH into the ec2 to apply them 
-```
-df -h
-sudo growpart /dev/xvda 1
-sudo resize2fs /dev/xvda1
-```
-
-#### Jenkins cluster access issue
-
-**Problem**: Jenkins cannot access the Kubernetes cluster because it lacks the necessary credentials in its environment. By default, Jenkins doesn't have a kubeconfig file with appropriate user identity or permissions.
-**Solution** : Copy the existing kubeconfig file (e.g., ~/.kube/config) — which typically contains the kubernetes-admin user with cluster-admin privileges — into Jenkins' environment. Jenkins doesn’t require a special user; it uses the credentials provided in the kubeconfig to authenticate and interact with the cluster.
-
-#### Minikube TLS Handshake Timeout
-**Problem**: The error Unable to connect to the server: net/http: TLS handshake timeout occurs when Minikube becomes unresponsive, often due to a poor network or stalled VM.
-**Solution**: Check Minikube status, stop and remove the Minikube container (if using Docker), then run minikube delete --all --purge. Finally, restart Minikube with minikube start to fix the issue and restore connectivity.
-
-#### Frontend always listen on port 3000:
-**Problem**: Why is the frontend container listening on 3000 when the Dockerfile & Kubernetes manifest say 5000?
-**Solution**: This typically happens when: The React development server (or your frontend framework) defaults to port 3000, and you didn’t override it properly.
-
-## Frequent commands:
-```
-kubectl get all --all-namespaces
-minikube service frontend -n learner-app  
-kubectl config set-context --current --namespace=learner-app
-curl ifconfig.me
-```
-----------------
 
 ### Folder structure
-
+```
 learnerReportCS_backend_copy/Dockerfile
 learnerReportCS_fronten_copy/Dockerfile
 Jenkinsfile
@@ -92,22 +18,130 @@ helm-charts/mern-chart/
                     └── backend-service.yaml
                     ├── mongo-deployment.yaml
                     └── mongo-service.yaml
+```
+----------
+## Ec2 setup
+
+| EC2 Instance | Role              | Key Components                               |
+| ------------ | ----------------- | -------------------------------------------- |
+| EC2 #1       | Kubernetes Master | kubeadm-initialized, control-plane           |
+| EC2 #2       | Kubernetes Worker | joined as a node, runs actual pods           |
+| EC2 #3       | Jenkins Host      | Jenkins, Docker, kubectl, kubeconfig present |
+
+---------
+## Get & POST API Endpoints
+
+| **GET Path**                                                       | **POST Path**                                                     |
+|--------------------------------------------------------------------|-------------------------------------------------------------------|
+| http://workernode_publicIP:FrontendNodeport/student/getstudent     | http://workernode_publicIP:backendNodeport/student/register       |
+|                                                                    | http://workernode_publicIP:backendNodeport/student/login          |
+|                                                                    | http://workernode_publicIP:backendNodeport/admin/register         |
+|                                                                    | http://workernode_publicIP:backendNodeport/admin/login            |
+| http://workernode_publicIP:FrontendNodeport/CareerService/getcareer| http://workernode_publicIP:backendNodeport/careerService/register |
+|                                                                    | http://workernode_publicIP:backendNodeport/careerService/login    |
+| http://workernode_publicIP:FrontendNodeport/faculty/getfaculty     | http://workernode_publicIP:backendNodeport/faculty/register       |
+|                                                                    | http://workernode_publicIP:backendNodeport/faculty/login          |
+| http://workernode_publicIP:FrontendNodeport/questions              | http://workernode_publicIP:backendNodeport/uploadQuestion         |
+|                                                                    | http://workernode_publicIP:backendNodeport/batch/register         |
+|                                                                    | http://workernode_publicIP:backendNodeport/attendance/register    |
+|----------------------------------------------------------------------------------------------------------------------------------------|
+
+## Nothing to play in the code.
+
+Change only the frontend .env data helm. 
+env:
+          - name: REACT_APP_API_BASE_URL
+            value: http://127.0.0.1:52572 # this has to be updated with backend ```IP + nodeport```
+
+## Install kubernetes:
+
+#### Pre-requisites :
+1. One ec2 for master node and another for ec2
+2. Storage 16 GB
+3. Inbound rule include : 30027, 30001, 5000 & 3000
+
+#### Install kubernetes:
+
+Install kubernetes on ec2 worker and master post switching to root user using ```sudo su -```
+
+https://github.com/ankitanand200193/Ec2_Kubeadm-Installation-Guide
+
+## Troubleshooting
+
+### 1. Cluster inaccessible | ubuntu
+**Problem**: Kubernetes cluster created as root user hence it is not allow ubuntu user to access it. 
+
+**Solution** :When Kubernetes is installed as the root user on an EC2 instance, the kubeconfig file is created under /root/.kube/config, making it inaccessible to the "ubuntu" user. As a result, kubectl fails due to missing configuration or insufficient permissions. Copying the file and adjusting permissions resolves the issue.
+
+```
+mkdir -p /home/ubuntu/.kube
+sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config
+```
+
+### 2. Understanding the Mongo url:
+
+**Problem** : What is the significance of the mongo url elements?
+
+**Solution** : mongodb://mongo:27017/learnerCS
+                      │     │        └─ Database name
+                      │     └─ Port MongoDB listens on (default 27017)
+                      └─ Hostname (should match the **MongoDB service** name in K8s)
+
+### 3. Increase the disk storage of ec2 if node taint found : disk-pressure
+
+**Problem**: Nodes are showing disk-pressure hence cannot create pods on the cluster. How to increase the size of the nodes?
+
+**Solution** :Increassing ec2 disk storage on console, then SSH into the ec2 to apply them 
+```
+df -h
+sudo growpart /dev/xvda 1
+sudo resize2fs /dev/xvda1
+```
+
+### 4. Jenkins cluster access issue
+
+**Problem**: Jenkins cannot access the Kubernetes cluster because it lacks the necessary credentials in its environment. By default, Jenkins doesn't have a kubeconfig file with appropriate user identity or permissions.
+
+**Solution** : Copy the existing kubeconfig file (e.g., ~/.kube/config) — which typically contains the kubernetes-admin user with cluster-admin privileges — into Jenkins' environment. Jenkins doesn’t require a special user; it uses the credentials provided in the kubeconfig to authenticate and interact with the cluster.
+
+### 5. Minikube TLS Handshake Timeout
+**Problem**: The error Unable to connect to the server: net/http: TLS handshake timeout occurs when Minikube becomes unresponsive, often due to a poor network or stalled VM.
+
+**Solution**: Check Minikube status, stop and remove the Minikube container (if using Docker), then run minikube delete --all --purge. Finally, restart Minikube with minikube start to fix the issue and restore connectivity.
+
+### 6. Frontend always listen on port 3000:
+**Problem**: Why is the frontend container listening on 3000 when the Dockerfile & Kubernetes manifest say 5000?
+
+**Solution**: This typically happens when: The React development server (or your frontend framework) defaults to port 3000, and you didn’t override it properly.
+
+## Frequent commands:
+```
+kubectl get all --all-namespaces
+minikube service frontend -n learner-app  
+kubectl config set-context --current --namespace=learner-app
+curl ifconfig.me
+```
+----------------
+
 
 ### Deployment using helm :Test
 
+```
 mkdir helm-charts && cd helm-charts
 helm create mern-chart # it will create the whole files system and you have to just write into the files.
 
-```
+
 serviceAccount:
   create: false   # Kubernetes automatically attaches the default ServiceAccount from the namespace if none is specified.
-```
-```
+
 rm mern-chart/templates/NOTES.txt # we are not using ingress.
 helm install ankit-anand-learnerapp  (helm deployment name) ./mern-chart
 helm upgrade ankit-anand-learnerapp  ./mern-chart
 helm list
-helm uninstall ankit-test-helm ```
+helm uninstall ankit-test-helm
+
+```
 
 Note: helm chart also has its namespace.
 
@@ -122,6 +156,7 @@ Note: helm chart also has its namespace.
 
 #### Jenkins installation :
 1. Install Jenkins
+   
 ```
 # run the following at once
 sudo apt update
@@ -184,15 +219,7 @@ sudo systemctl start jenkins
    8.4 Set:ID: dockerhub-credentials; Username: your DockerHub username: Password: DockerHub password or personal access token(PAT) then save
    **Note**: PAT should be with read, write and delete access 
 
-## Ec2 setup
 
-| EC2 Instance | Role              | Key Components                               |
-| ------------ | ----------------- | -------------------------------------------- |
-| EC2 #1       | Kubernetes Master | kubeadm-initialized, control-plane           |
-| EC2 #2       | Kubernetes Worker | joined as a node, runs actual pods           |
-| EC2 #3       | Jenkins Host      | Jenkins, Docker, kubectl, kubeconfig present |
-
----------
 
 ### How Jenkins perform tasks on kubernetes cluster
 [Jenkins EC2 (with kubectl)] 
@@ -221,7 +248,7 @@ Commands to run on the shell
 
 1. Disable Firewall Temporarily (for testing only)
 
-⚠️ Not recommended long-term.
+ Not recommended long-term.
 
 ```netsh advfirewall set allprofiles state off```
 
@@ -236,22 +263,6 @@ Re-enable it after testing:
 2. index.js .env file path is modified ```require("dotenv").config({ path: ".env" });```
 3. **PORT** is missing in the .env file.
 4. comment out the HASH_KEY and JWT_SECRET_KEY in the .env file.
-
-## Get & POST API Endpoints
-
-| **GET Path**                                                       | **POST Path**                                                     |
-|--------------------------------------------------------------------|-------------------------------------------------------------------|
-| http://workernode_publicIP:FrontendNodeport/student/getstudent     | http://workernode_publicIP:backendNodeport/student/register       |
-|                                                                    | http://workernode_publicIP:backendNodeport/student/login          |
-|                                                                    | http://workernode_publicIP:backendNodeport/admin/register         |
-|                                                                    | http://workernode_publicIP:backendNodeport/admin/login            |
-| http://workernode_publicIP:FrontendNodeport/CareerService/getcareer| http://workernode_publicIP:backendNodeport/careerService/register |
-|                                                                    | http://workernode_publicIP:backendNodeport/careerService/login    |
-| http://workernode_publicIP:FrontendNodeport/faculty/getfaculty     | http://workernode_publicIP:backendNodeport/faculty/register       |
-|                                                                    | http://workernode_publicIP:backendNodeport/faculty/login          |
-| http://workernode_publicIP:FrontendNodeport/questions              | http://workernode_publicIP:backendNodeport/uploadQuestion         |
-|                                                                    | http://workernode_publicIP:backendNodeport/batch/register         |
-|                                                                    | http://workernode_publicIP:backendNodeport/attendance/register    |
 
 
 #### To know the endpoint of your database:
