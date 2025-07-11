@@ -1,5 +1,51 @@
 # Graded Assignment on Container Orchestration
 
+## Results :
+
+## Jenkins pipeline build
+
+![Alt](Result_screenshots/jenkins_job.png)
+
+## Helm creating the app:
+
+![Alt](Result_screenshots/Helm_created.png)
+
+
+## Resources created by Helm:
+
+![Alt](Result_screenshots/helm_resources.png)
+
+
+## Frontend UI:
+
+![Alt](Result_screenshots/frontend_ui.png)
+
+## Backend UI:
+
+![Alt](Result_screenshots/backend_ui.png)
+
+## Postman --> Backend | data ingestion
+
+![Alt](Result_screenshots/postman_post_backend.png)
+
+
+## Frontend communicates to backend
+
+![Alt](Result_screenshots/fronted_2_backend.png)
+
+## IP | Ec2 dashboard
+
+![Alt](Result_screenshots/ec2_dashboard_worker_node_ip.png)
+
+
+### Steps Overview:
+1. Create the Dockerfile and test
+2. Create the manifest file and test
+3. Create the Helm
+4. Write Jenkins file
+5. Provision 3 Ec2s and install the required tools.
+6. Build the Jenkins pipeline
+
 ### Folder structure
 ```
 learnerReportCS_backend_copy/Dockerfile
@@ -53,7 +99,7 @@ env:
           - name: REACT_APP_API_BASE_URL
             value: http://127.0.0.1:52572 # this has to be updated with backend ```IP + nodeport```
 
-## Install kubernetes:
+## Install kubernetes with kubeadm:
 
 #### Pre-requisites :
 1. One ec2 for master node and another for ec2
@@ -153,7 +199,7 @@ rm mern-chart/templates/NOTES.txt # we are not using ingress.
 helm install ankit-anand-learnerapp  (helm deployment name) ./mern-chart
 helm upgrade ankit-anand-learnerapp  ./mern-chart
 helm list
-helm uninstall ankit-test-helm
+helm uninstall ankit-anand-learnerapp
 
 ```
 
@@ -314,36 +360,12 @@ Postman Url: http://workernode_publicIP:backendNodeport/admin/register
 
 ```
 
-## Results :
-
-## Helm creating the app:
-
-![Alt]()
 
 
-## Frontend UI:
 
-![Alt]()
 
-## Backend UI:
 
-![Alt]()
 
-## IP | Ec2 dashboard
-
-![Alt]()
-
-## Jenkins pipeline build
-
-![Alt]()
-
-## Postman --> Backend | data ingestion
-
-![Alt]()
-
-## Frontend communicates to backend
-
-![Alt]()
 
 
 
