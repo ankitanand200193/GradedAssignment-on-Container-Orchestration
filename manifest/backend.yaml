@@ -1,5 +1,4 @@
 # backend-deployment.yaml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,7 +28,7 @@ spec:
               value: "thisIsMyJwtSecretKey"
             - name: PORT
               value: "5000"
-             
+
 ---
 # backend-service.yaml
 apiVersion: v1
@@ -41,8 +40,7 @@ spec:
   selector:
     app: backend
   type: NodePort
-  
+
   ports:
     - port: 5000
       targetPort: 5000
-      nodePort: 30027
