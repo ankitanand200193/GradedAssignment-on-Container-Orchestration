@@ -6,7 +6,7 @@ pipeline {
     IMAGE_FRONTEND      = "${DOCKER_HUB_USER}/learnerreport_frontend"
     IMAGE_BACKEND       = "${DOCKER_HUB_USER}/learnerreport_backend"
     DOCKER_CREDENTIALS  = 'dockerhub-credentials'
-    HELM_RELEASE        = 'learnerapp'
+    HELM_RELEASE        = 'Ankit-Anand-learnerapp'
     HELM_CHART_DIR      = 'helm-charts/mern-chart'
     KUBE_NAMESPACE      = 'learner-app'
   }
