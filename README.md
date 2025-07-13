@@ -233,8 +233,8 @@ sudo systemctl enable jenkins
 sudo systemctl start jenkins
 
 ```
-2. http://EC2-Public-IP:8080
-3. unlock the passoword : ``` sudo cat /var/lib/jenkins/secrets/initialAdminPassword ```
+2. Access Jenkins here : http://EC2-Public-IP:8080
+3. Unlock the passoword : ``` sudo cat /var/lib/jenkins/secrets/initialAdminPassword ```
 4. Install docker, kubectl and helm so that jenkins can run the resources.
 
    **Helm installation:**
